@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Travel and Tourism</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- font awesome cdn -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+        integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- fonts -->
+    <link rel="stylesheet" href="font/fonts.css">
+    <!-- normalize css -->
+    <link rel="stylesheet" href="css/normalize.css">
+    <!-- custom css -->
+    <link rel="stylesheet" href="css/utility.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+
+<body>
+    <!-- navbar  -->
+    <nav class="navbar">
+        <div class="container flex">
+            <a href="index.html" class="site-brand">
+                JetSet<span>Nest</span>
+            </a>
+
+            <button type="button" id="navbar-show-btn" class="flex">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div id="navbar-collapse">
+                <button type="button" id="navbar-close-btn" class="flex">
+                    <i class="fas fa-times"></i>
+                </button>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="gallery.html" class="nav-link">Gallery</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="packages.html" class="nav-link">Packages</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="about.html" class="nav-link">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="contact.html" class="nav-link">Contact</a>
+                    </li>
+                    <li id="adminPanel" class="nav-item">
+                        <a href="./admin/html/layouts-container.html" class="nav-link">Admin Panel</a>
+                    </li>
+                    <li id="logoutLink" class="nav-item">
+                        <a class="nav-link">Logout</a>
+                    </li>
+                    <li id="loginLink" class="nav-item">
+                        <a href="register.html" class="nav-link">Register</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- end of navbar  -->
+
+    <!-- header -->
+    <header class="flex">
+        <div class="container">
+            <div class="header-title">
+                <h1>Let's Jump!!</h1>
+                <p>Lets step into a new world to explore the world leaving the workload aside!!.</p>
+            </div>
+            <div class="header-form">
+                <h2>Choose your Travel location:</h2>
+                <div class="flex">
+                    <input type="text" class="form-control" placeholder="Destination name" id="searchTerm">
+                    <input type="date" class="form-control" placeholder="Date">
+                    <input type="number" class="form-control" placeholder="Price ($)">
+                    <button class="btn" onclick="searchJobs()">Search</button>
+                </div>
+            </div>
+            <div class="header-form" id="searchResult">
+            </div>
+        </div>
+    </header>
+    <!-- header -->
+
+    <!-- featured section -->
+    <section id="featured" class="py-4">
+        <div class="container">
+            <div class="title-wrap">
+                <span class="sm-title">know about some places before your travel</span>
+                <h2 class="lg-title">featured places</h2>
+            </div>
+
+            <div class="featured-row">
+                <div class="featured-item my-2 shadow">
+                    <img src="images/featured-nashik2.jpeg" alt="featured place">
+                    <div class="featured-item-content">
+                        <span>
+                            <i class="fas fa-map-marker-alt"></i>
+                            Nashik
+                        </span>
+                        <div>
+                            <p class="text">Nashik of the top 3rd city of Maharashtra which is also known as Wine
+                                Capital of whole India.Nashik has various holy places including Kalaram Mandir,Shrine of
+                                Infant Jesus etc.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="featured-item my-2 shadow">
+                    <img src="images/featured-mumbai.jpg" alt="featured place">
+                    <div class="featured-item-content">
+                        <span>
+                            <i class="fas fa-map-marker-alt"></i>
+                            Mumbai- City of Dreams
+                        </span>
+                        <div>
+                            <p class="text"> Mumbai, formerly known as Bombay, is the capital city of the Indian state
+                                of Maharashtra. Gateway of India .Tower of Silence and many other tourist attractions in
+                                Mumbai.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="featured-item my-2 shadow">
+                    <img src="images/feartured-bangalore.jpg" alt="featured place">
+                    <div class="featured-item-content">
+                        <span>
+                            <i class="fas fa-map-marker-alt"></i>
+                            Bangalore
+                        </span>
+                        <div>
+                            <p class="text">Bangalore historical places are many and various. If you are eager to learn
+                                about the lifestyle of the rulers from the past, Bangalore Palace that will give you
+                                some useful insights.</p>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="featured-item my-2 shadow">
+                    <img src="images/Feartured-gujarat.jpg" alt="featured place">
+                    <div class="featured-item-content">
+                        <span>
+                            <i class="fas fa-map-marker-alt"></i>
+                            Gujarat
+                        </span>
+                        <div>
+                            <p class="text">Gujarat,a state in western India oasts of its rich historicalbackground.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="featured-item my-2 shadow">
+                    <img src="images/feartured-kerala.jpg" alt="featured place">
+                    <div class="featured-item-content">
+                        <span>
+                            <i class="fas fa-map-marker-alt"></i>
+                            Kerala
+                        </span>
+                        <div>
+                            <p class="text">One of the most integral parts of the state's heritage is the wisdom of
+                                Ayurveda. </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="featured-item my-2 shadow">
+                    <img src="images/feartured-hyderabad2.jpg" alt="featured place">
+                    <div class="featured-item-content">
+                        <span>
+                            <i class="fas fa-map-marker-alt"></i>
+                            Hyderabad
+                        </span>
+                        <div>
+                            <p class="text">
+                                Hyderabad is known as the City of Pearls, as it had once flourished as a global center
+                                for trade of rare diamonds, emeralds as well as natural pearls.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- end of featured section -->
+
+    <!-- services section -->
+    <section id="services" class="py-4">
+        <div class="container">
+            <div class="title-wrap">
+                <span class="sm-title">know about services that we offer</span>
+                <h2 class="lg-title">Our services</h2>
+            </div>
+
+            <div class="services-row">
+                <div class="services-item">
+                    <span class="services-icon">
+                        <i class="fas fa-hotel"></i>
+                    </span>
+                    <h3>Luxurious Hotel</h3>
+                    <p class="text">Indulge in unparalleled luxury and sophistication with our handpicked selection of
+                        exquisite hotels.
+                        Our gallery features an exclusive glimpse into the world of opulence, where every detail is
+                        meticulously crafted to exceed your expectations</p>
+                    <a href="#" class="btn">Read more</a>
+                </div>
+
+                <div class="services-item">
+                    <span class="services-icon">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </span>
+                    <h3>Trave Guide</h3>
+                    <p class="text"> Your ultimate companion for planning memorable journeys and exploring the world's
+                        wonders.
+                        Our travel guide is meticulously crafted to provide you with invaluable insights, insider tips,
+                        and practical advice for every step of your adventure. </p>
+                    <a href="#" class="btn">Read more</a>
+                </div>
+
+                <div class="services-item">
+                    <span class="services-icon">
+                        <i class="fas fa-money-bill"></i>
+                    </span>
+                    <h3>Suitable Price</h3>
+                    <p class="text">At JetSetNest, we believe that exceptional travel experiences shouldn't come with an
+                        exorbitant price tag.
+                        That's why we're committed to offering suitable prices that strike the perfect balance between
+                        affordability and quality.</p>
+                    <a href="#" class="btn">Read more</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- end of services section -->
+
+    <!-- testimonials section -->
+    <section id="testimonials" class="py-4">
+        <div class="container">
+            <div class="title-wrap">
+                <span class="sm-title">what our clients say about us</span>
+                <h2 class="lg-title">testimonials</h2>
+            </div>
+
+            <div class="test-row">
+                <div class="test-item">
+                    <p class="text">So much greenery!</p>
+                    <div class="test-item-info">
+                        <img src="images/test-12.png  " alt="testimonial">
+                        <div>
+                            <h3>Kevin Wilson</h3>
+                            <p class="text">Trip to Krela</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="test-item">
+                    <p class="text">Never seen so much crowd for 10rs wadapav!</p>
+                    <div class="test-item-info">
+                        <img src="images/test-2.png" alt="testimonial">
+                        <div>
+                            <h3>Binnie</h3>
+                            <p class="text">Trip to Mumbai</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="test-item">
+                    <p class="text">Beautiful place! Beautiful people!! Beautiful Food and so much more!!</p>
+                    <div class="test-item-info">
+                        <img src="images/tes-4.jpg" alt="testimonial">
+                        <div>
+                            <h3>Anna</h3>
+                            <p class="text">Trip to Bangalore</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- end of testimonials section -->
+
+    <!-- video section -->
+    <section id="video">
+        <div class="video-wrapper flex">
+            <video loop>
+                <source src="videos/Vedio-section2.mp4" type="video/mp4">
+            </video>
+            <button type="button" id="play-btn">
+                <i class="fas fa-play"></i>
+            </button>
+        </div>
+    </section>
+    <!-- end of video section -->
+
+    <!-- footer -->
+    <footer class="py-4">
+        <div class="container footer-row">
+            <div class="footer-item">
+                <a href="index.html" class="site-brand">
+                    JetSet<span>Nest</span>
+                </a>
+                <p class="text">JetSetNest aims to inspire and empower travelers to explore the beauty and diversity of
+                    the world. It achieves this through a plethora of innovative features and functionalities,
+                    meticulously crafted to enhance every step of the traveler's journey.</p>
+            </div>
+
+            <div class="footer-item">
+                <h2>Follow us on: </h2>
+                <ul class="social-links">
+                    <li>
+                        <a href="#">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fab fa-pinterest"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fab fa-google-plus"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="footer-item">
+                <h2>Popular Places:</h2>
+                <ul>
+                    <li><a href="#">Mumbai</a></li>
+                    <li><a href="#">Pune</a></li>
+                    <li><a href="#">Ahamdabad</a></li>
+                    <li><a href="#">Rajasthan</a></li>
+                    <li><a href="#">Channai </a></li>
+                </ul>
+            </div>
+
+            <div class="subscribe-form footer-item">
+                <h2>Subscribe for Newsletter!</h2>
+                <form class="flex">
+                    <input type="email" placeholder="Enter Email" class="form-control">
+                    <input type="submit" class="btn" value="Subscribe">
+                </form>
+            </div>
+        </div>
+    </footer>
+    <!-- end of footer -->
+
+    <!-- js -->
+    <script src="script.js"></script>
+    <script>
+        // play/pause video
+        let video = document.querySelector('.video-wrapper video');
+        document.getElementById('play-btn').addEventListener('click', () => {
+            if (video.paused) {
+                video.play();
+            } else {
+                video.pause();
+            }
+        });
+        // search function
+        async function searchJobs() {
+            const searchTerm = document.getElementById('searchTerm').value.toLowerCase();
+            const searchResult = document.getElementById('searchResult');
+            if (searchTerm) {
+                try {
+                    const response = await fetch("/get-packages-listings");
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch packages: ${response.statusText}`);
+                    }
+
+                    const responseData = await response.json();
+
+                    if (!Array.isArray(responseData)) {
+                        throw new Error("Invalid response format: expected an array");
+                    }
+
+                    for (const package of responseData) {
+                        try {
+                            const response2 = await fetch(`/image?imageId=${package.thumbnailImage}`);
+                            if (!response2.ok) {
+                                console.log(
+                                    "Failed to fetch thumbnail image:",
+                                    response2.statusText
+                                );
+                                continue;
+                            }
+                            if (package.packageTitle.toLowerCase().includes(searchTerm) || package.tourLocation.toLowerCase().includes(searchTerm)) {
+
+                           
+                            const responseData2 = await response2.json();
+                            const base64Data = responseData2.fileData;
+
+                            const blob = base64toBlob(base64Data);
+
+                            const blobUrl = URL.createObjectURL(blob);
+
+                            const packageCard = document.createElement("div");
+                            packageCard.classList.add("popular-row");
+
+                            // <img src="${blobUrl}" alt="blog">
+                            // <h2>${package.packageTitle}</h2>
+                            // <p><strong>Location:</strong> ${package.tourLocation}</p>
+                            // <p><strong>Date:</strong> ${package.date}</p>
+                            // <p><strong>Price:</strong> ₹${package.price}</p>
+                            // <p class="text">${package.description}</p>
+                            // <button class="btn">Book Now</button>
+                            packageCard.innerHTML = `
+              <div href="packages.html" class = "popular-item">
+              <img src = "${blobUrl}"><br>
+                        <span><strong>${package.packageTitle}</strong></span>
+                        <ul class = "rating flex">
+                            <li><i class = "fas fa-star"></i></li>
+                            <li><i class = "fas fa-star"></i></li>
+                            <li><i class = "fas fa-star"></i></li>
+                            <li><i class = "fas fa-star"></i></li>
+                            <li><i class = "fas fa-star-half-alt"></i></li>
+                            <li>&nbsp;400 reviews</li>
+                        </ul>
+                        <p><strong>Location:</strong> ${package.tourLocation}</p>
+                        <p><strong>Date:</strong> ${package.date}</p>
+                        <p><strong>Price:</strong> ₹${package.price}</p>
+                        <p class = "text">${package.description}</p>
+                        </div>
+          `;
+          searchResult.innerHTML = '';
+          searchResult.appendChild(packageCard);
+        }
+                        } catch (error) {
+                            console.error("Error fetching thumbnail image:", error);
+                        }
+                    }
+                } catch (error) {
+                    console.error("Error fetching packages listings:", error);
+                }
+            } else {
+                console.log("none");
+            }
+        }
+    </script>
+</body>
+
+</html>
