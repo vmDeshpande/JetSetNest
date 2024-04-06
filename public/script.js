@@ -93,6 +93,54 @@ function register() {
     });
 }
 
+// inquire function
+function inquire() {
+  let inquireData;
+  inquireData = {
+    name: document.getElementById("name").value,
+    email: document.getElementById("email").value,
+    message: document.getElementById("message").value,
+  };
+
+  fetch("/inquire", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(inquireData),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      if (data.message === "Inquire Submitted") {
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: `Inquire Submitted`,
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          }
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error!",
+          text: `${data.message}`,
+        });
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: `${error.message}`,
+      });
+    });
+}
+
 // login function
 function login() {
   const loginData = {
@@ -323,8 +371,11 @@ function submitPackage() {
 // load packages on page
 document.addEventListener("DOMContentLoaded", async () => {
   const PublicPackages = document.getElementById("loadPackagesOnPublic");
+  const DestinationsLoad = document.getElementById("destinationsLoad");
   const AdminPackages = document.getElementById("loadPackagesOnAdmin");
   const UserPackages = document.getElementById("loadBookedPackages");
+  const InquiresLoad = document.getElementById("inquiresLoad");
+  const BookingsLoad = document.getElementById("bookingsLoad");
 
   if (PublicPackages) {
     try {
@@ -379,6 +430,66 @@ document.addEventListener("DOMContentLoaded", async () => {
           `;
 
           PublicPackages.appendChild(packageCard);
+        } catch (error) {
+          console.error("Error fetching thumbnail image:", error);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching packages listings:", error);
+    }
+  } else {
+    console.log("none");
+  }
+
+  if (DestinationsLoad) {
+    try {
+      const response = await fetch("/get-packages-listings");
+      if (!response.ok) {
+        throw new Error(`Failed to fetch packages: ${response.statusText}`);
+      }
+
+      const responseData = await response.json();
+
+      if (!Array.isArray(responseData)) {
+        throw new Error("Invalid response format: expected an array");
+      }
+
+      for (const package of responseData) {
+        try {
+          const response2 = await fetch(
+            `/image?imageId=${package.thumbnailImage}`
+          );
+          if (!response2.ok) {
+            console.log(
+              "Failed to fetch thumbnail image:",
+              response2.statusText
+            );
+            continue;
+          }
+
+          const responseData2 = await response2.json();
+          const base64Data = responseData2.fileData;
+
+          const blob = base64toBlob(base64Data);
+
+          const blobUrl = URL.createObjectURL(blob);
+
+          const packageCard = document.createElement("div");
+          packageCard.classList.add("blog-item", "my-2", "shadow");
+          console.log(package);
+
+          packageCard.innerHTML = `
+            <div class="blog-item-top">
+              <img src="${blobUrl}" alt="blog">
+            </div>
+            <div class="blog-item-bottom">
+              <h3>${package.packageTitle}</h3>
+              <p><strong>Location:</strong> ${package.tourLocation}</p>
+              <p class="text">${package.description}</p>
+            </div>            
+          `;
+
+          DestinationsLoad.appendChild(packageCard);
         } catch (error) {
           console.error("Error fetching thumbnail image:", error);
         }
@@ -460,28 +571,29 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (!response.ok) {
           console.log(`Failed to fetch packages: ${response.statusText}`);
       }
-  
+      
       const responseData = await response.json();
       console.log(responseData);
   
       // Assuming responseData is an array of package objects
   
-      for (const package of responseData) {
+      for (const booking of responseData) {
+        for (const bookedPackage of booking.bookings) {
           try {
               const packageCard = document.createElement("div");
               packageCard.classList.add("blog-item", "my-2", "shadow");
   
               packageCard.innerHTML = `
                   <div class="blog-item-top">
-                      <img src="${package.blobUrl}" alt="blog">
-                      <span class="blog-date">${package.date}</span>
+                      <img src="${bookedPackage.blobUrl}" alt="blog">
+                      <span class="blog-date">${bookedPackage.date}</span>
                   </div>
                   <div class="blog-item-bottom">
-                      <h3>${package.packageTitle}</h3>
-                      <p><strong>Location:</strong> ${package.tourLocation}</p>
-                      <p><strong>Price:</strong> ₹${package.price}</p>
-                      <p class="text">${package.description}</p>
-                      <button class="btn" onclick="cancelPackageBooking('${package.date}', '${package.blobUrl}', '${package.packageTitle}', '${package.tourLocation}', '${package.price}', '${package.description}')">Cancel Booking</button>
+                      <h3>${bookedPackage.packageTitle}</h3>
+                      <p><strong>Location:</strong> ${bookedPackage.tourLocation}</p>
+                      <p><strong>Price:</strong> ₹${bookedPackage.price}</p>
+                      <p class="text">${bookedPackage.description}</p>
+                      <button class="btn" onclick="cancelPackageBooking('${bookedPackage.date}', '${bookedPackage.blobUrl}', '${bookedPackage.packageTitle}', '${bookedPackage.tourLocation}', '${bookedPackage.price}', '${bookedPackage.description}')">Cancel Booking</button>
                   </div>
               `;
   
@@ -489,6 +601,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           } catch (error) {
               console.error("Error fetching thumbnail image:", error);
           }
+        }
       }
   } catch (error) {
       console.error("Error fetching packages listings:", error);
@@ -496,6 +609,84 @@ document.addEventListener("DOMContentLoaded", async () => {
   } else {
     console.log("none");
   }
+
+  if (InquiresLoad) {
+    try {
+        const response = await fetch("/get-all-inquiries");
+        if (!response.ok) {
+            throw new Error(`Failed to fetch inquiries: ${response.statusText}`);
+        }
+
+        const responseData = await response.json();
+
+        if (!Array.isArray(responseData)) {
+            throw new Error("Invalid response format: expected an array");
+        }
+
+        let counter = 1; // Initialize the counter variable
+
+        for (const inquire of responseData) {
+            const inquireRow = document.createElement("tr");
+            console.log(inquire);
+
+            inquireRow.innerHTML = `
+                <th scope="row">${counter}</th>
+                <td>${inquire.name}</td>
+                <td>${inquire.email}</td>
+                <td>${inquire.message}</td>
+            `;
+
+            InquiresLoad.appendChild(inquireRow);
+            
+            counter++; // Increment the counter for the next row
+        }
+    } catch (error) {
+        console.error("Error fetching inquiries listings:", error);
+    }
+} else {
+    console.log("none");
+}
+
+if (BookingsLoad) {
+  try {
+      const response = await fetch("/get-booked-packages-listings-admin");
+      if (!response.ok) {
+          throw new Error(`Failed to fetch bookings: ${response.statusText}`);
+      }
+      const responseData = await response.json();
+
+      if (!Array.isArray(responseData)) {
+          throw new Error("Invalid response format: expected an array");
+      }
+
+      let counter = 1; // Initialize the counter variable
+
+      for (const booking of responseData) {
+          for (const bookedPackage of booking.bookings) {
+              const bookingRow = document.createElement("tr");
+              console.log(bookedPackage);
+
+              bookingRow.innerHTML = `
+                  <th scope="row">${counter}</th>
+                  <td>${bookedPackage.packageTitle}</td>
+                  <td>${booking.username}</td>
+                  <td>${booking.email}</td>
+                  <td>${booking.number}</td>
+              `;
+
+              BookingsLoad.appendChild(bookingRow);
+              
+              counter++; // Increment the counter for the next row
+          }
+      }
+  } catch (error) {
+      console.error("Error fetching bookings listings:", error);
+  }
+} else {
+  console.log("none");
+}
+
+
 
 });
 

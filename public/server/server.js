@@ -8,7 +8,9 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 const path = require('path');
 const User = require('../models/user');
+const Booking = require('../models/booking');
 const Admin = require('../models/admin');
+const Inquire = require('../models/inquires');
 const TravelPackage = require('../models/packages');
 const ThumbnailImage = require('../models/image'); // Import the ThumbnailImage model
 const secretKey = crypto.randomBytes(64).toString('hex');
@@ -62,6 +64,36 @@ app.post('/register', async (req, res) => {
         res.status(500).json({ message: 'Registration failed', error: error.message });
     }
 });
+
+// contact api
+app.post('/inquire', async (req, res) => {
+    const { name, email, message } = req.body;
+    try {
+        const newData = new Inquire({
+            name,
+            email,
+            message,
+        });
+
+        await newData.save();
+        res.json({ message: 'Inquire Submitted' });
+    } catch (error) {
+        res.status(500).json({ message: 'Inquire Submission failed', error: error.message });
+    }
+});
+
+// get all inquiries api
+app.get('/get-all-inquiries', async (req, res) => {
+    try {
+        // Retrieve all inquiries from the database
+        const inquiries = await Inquire.find();
+
+        res.json(inquiries);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching inquiries', error: error.message });
+    }
+});
+
 
 // login api
 app.post('/login', async (req, res) => {
@@ -183,16 +215,29 @@ app.get('/get-booked-packages-listings', async (req, res) => {
 
     try {
         // Find the user by username
-        const user = await User.findOne({ username });
+        const bookings = await Booking.find({ username: username });
 
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+        if (!bookings) {
+            return res.status(404).json({ message: 'bookings not found' });
         }
 
-        // Extract package titles from the user's bookings
-        const bookedPackages = user.bookings;
+        res.json(bookings);
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({ message: 'Error fetching booked packages listings', error: error.message });
+    }
+});
 
-        res.json(bookedPackages);
+app.get('/get-booked-packages-listings-admin', async (req, res) => {
+
+    try {
+        const booking = await Booking.find();
+
+        if (!booking) {
+            return res.status(404).json({ message: 'bookings not found' });
+        }
+
+        res.json(booking);
     } catch (error) {
         console.error("Error:", error);
         res.status(500).json({ message: 'Error fetching booked packages listings', error: error.message });
@@ -203,15 +248,26 @@ app.get('/get-booked-packages-listings', async (req, res) => {
 app.post('/package-booking', async (req, res) => {
     const { date, blobUrl, packageTitle, tourLocation, price, description } = req.body;
     try {
-        const userName = req.session.user.username;
+        const username = req.session.user.username;
+    const number = req.session.user.number;
+    const email = req.session.user.email;
+        // Create a new instance of the Bookings model
+        const newBooking = new Booking({
+            username,
+            number,
+            email,
+            bookings: [{
+                packageTitle,
+                tourLocation,
+                price,
+                description,
+                blobUrl,
+                date
+            }]
+        });
 
-        // Update the user document with the new booking
-        await User.findOneAndUpdate(
-            { username: userName },
-            // Push a new object with booking details into the bookings array
-            { $push: { bookings: { date, blobUrl, packageTitle, tourLocation, price, description } } },
-            { new: true }
-        );
+        // Save the new booking to the database
+        await newBooking.save();
 
         res.json({ message: 'Booking status updated successfully' });
     } catch (error) {
@@ -225,12 +281,14 @@ app.post('/cancel-package-booking', async (req, res) => {
     try {
         const userName = req.session.user.username;
 
-        // Update the user document by removing the booking with the specified packageTitle
-        await User.findOneAndUpdate(
-            { username: userName },
-            { $pull: { bookings: { packageTitle } } },
-            { new: true }
+        // Find and delete the booking entry with the specified packageTitle
+        const result = await Booking.findOneAndDelete(
+            { username: userName, 'bookings.packageTitle': packageTitle }
         );
+
+        if (!result) {
+            return res.status(404).json({ message: 'Booking not found' });
+        }
 
         res.json({ message: 'Booking canceled successfully' });
     } catch (error) {
@@ -238,6 +296,7 @@ app.post('/cancel-package-booking', async (req, res) => {
         res.status(500).json({ message: 'Error canceling booking', error: error.message });
     }
 });
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
