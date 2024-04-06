@@ -62,7 +62,7 @@
                         </li> 
                     </ul>
                 </div>
-            </div>
+            </div>  
         </nav>
         <!-- end of navbar  -->
 
@@ -70,29 +70,28 @@
         <header class = "flex header-sm">
             <div class = "container">
                 <div class = "header-title">
-                    <h1>Login</h1>
-                    <p>Login into your account to get more details about traveling.</p>
+                    <h1>Booked Packages</h1>
+                    <p>Welcome to our Travel Blog, where we embark on journeys of discovery and share our passion for exploring the world. Join us as we delve into fascinating destinations, uncover hidden gems, and share insider tips to make your travels unforgettable.</p>
                 </div>
             </div>
         </header>
         <!-- header -->
 
-        <!-- contact section -->
-        <section id="login" class="py-4">
-            <div class="container">
-                <div class="title-wrap">
-                    <span><a href="adminlogin.html">Admin login</a></span>
-                    <h2 class="lg-title">Login</h2>
+        <!-- blog section -->
+        <section id = "blog" class = "py-4">
+            <div class = "container">
+                <div class = "title-wrap">
+                    <h2 class = "sm-title">Start Packing Your Bags!!</h2>
+                    <h3 class = "lg-title">Booked packages</h3>
                 </div>
-                <form class="contact-form" action="javascript:void(0);" onsubmit="login();">
-                    <input type="text" id="username" class="form-control" placeholder="Your name" required>
-                    <input type="password" id="password" class="form-control" placeholder="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters">
-                    <button type="submit" class="btn">Login</button><br>
-                    <span>Don't have an account? <a href="register.html">Register</a></span>
-                </form>
+
+                <div class = "blog-row" id="loadBookedPackages">
+                    
+                </div>
             </div>
         </section>
-        <!-- end of contact section -->        
+        <!-- end of blog section -->
+        
 
         <!-- footer -->
         <footer class = "py-4">

@@ -5,6 +5,14 @@ const userSchema = new mongoose.Schema({
     number: String,
     email: String,
     password: String,
+    bookings: [{
+        packageTitle: String,
+        tourLocation: String,
+        price: String,
+        description: String,
+        blobUrl: String,
+        date: String,
+    }],
 });
 
 const User = mongoose.model('User', userSchema);

@@ -217,22 +217,26 @@ async function toggleAuthLinks() {
   const loginLink = document.getElementById("loginLink");
   const logoutButton = document.getElementById("logoutLink");
   const adminPanel = document.getElementById("adminPanel");
+  const userPanel = document.getElementById("userPanel");
 
   console.log("waiting for login...");
   if (await isUser()) {
     console.log("logged in as user");
     if (loginLink) loginLink.style.display = "none";
     if (logoutButton) logoutButton.style.display = "inline";
+    if (userPanel) userPanel.style.display = "inline";
     if (adminPanel) adminPanel.style.display = "none";
   } else if (await isAdmin()) {
     console.log("logged in as admin");
     if (loginLink) loginLink.style.display = "none";
+    if (userPanel) userPanel.style.display = "none";
     if (logoutButton) logoutButton.style.display = "inline";
     if (adminPanel) adminPanel.style.display = "inline";
   } else {
     console.log("no one logged in");
     if (loginLink) loginLink.style.display = "inline";
     if (logoutButton) logoutButton.style.display = "none";
+    if (userPanel) userPanel.style.display = "none";
     if (adminPanel) adminPanel.style.display = "none";
   }
 }
@@ -320,6 +324,7 @@ function submitPackage() {
 document.addEventListener("DOMContentLoaded", async () => {
   const PublicPackages = document.getElementById("loadPackagesOnPublic");
   const AdminPackages = document.getElementById("loadPackagesOnAdmin");
+  const UserPackages = document.getElementById("loadBookedPackages");
 
   if (PublicPackages) {
     try {
@@ -357,7 +362,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           const packageCard = document.createElement("div");
           packageCard.classList.add("blog-item", "my-2", "shadow");
           console.log(package);
-          // <button class="btn">Book Now</button>
 
           packageCard.innerHTML = `
             <div class="blog-item-top">
@@ -369,6 +373,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               <p><strong>Location:</strong> ${package.tourLocation}</p>
               <p><strong>Price:</strong> ₹${package.price}</p>
               <p class="text">${package.description}</p>
+              <button class="btn" onclick="handlePackageBooking('${package.date}', '${blobUrl}', '${package.packageTitle}', '${package.tourLocation}', '${package.price}', '${package.description}')">Book Now</button>
             </div>
 
           `;
@@ -448,6 +453,50 @@ document.addEventListener("DOMContentLoaded", async () => {
   } else {
     console.log("none");
   }
+
+  if (UserPackages) {
+    try {
+      const response = await fetch("/get-booked-packages-listings");
+      if (!response.ok) {
+          console.log(`Failed to fetch packages: ${response.statusText}`);
+      }
+  
+      const responseData = await response.json();
+      console.log(responseData);
+  
+      // Assuming responseData is an array of package objects
+  
+      for (const package of responseData) {
+          try {
+              const packageCard = document.createElement("div");
+              packageCard.classList.add("blog-item", "my-2", "shadow");
+  
+              packageCard.innerHTML = `
+                  <div class="blog-item-top">
+                      <img src="${package.blobUrl}" alt="blog">
+                      <span class="blog-date">${package.date}</span>
+                  </div>
+                  <div class="blog-item-bottom">
+                      <h3>${package.packageTitle}</h3>
+                      <p><strong>Location:</strong> ${package.tourLocation}</p>
+                      <p><strong>Price:</strong> ₹${package.price}</p>
+                      <p class="text">${package.description}</p>
+                      <button class="btn" onclick="cancelPackageBooking('${package.date}', '${package.blobUrl}', '${package.packageTitle}', '${package.tourLocation}', '${package.price}', '${package.description}')">Cancel Booking</button>
+                  </div>
+              `;
+  
+              UserPackages.appendChild(packageCard);
+          } catch (error) {
+              console.error("Error fetching thumbnail image:", error);
+          }
+      }
+  } catch (error) {
+      console.error("Error fetching packages listings:", error);
+  }  
+  } else {
+    console.log("none");
+  }
+
 });
 
 function base64toBlob(base64Data) {
@@ -461,3 +510,84 @@ function base64toBlob(base64Data) {
   const byteArray = new Uint8Array(byteNumbers);
   return new Blob([byteArray], { type: "image/png" });
 }
+
+async function handlePackageBooking(date, blobUrl, packageTitle, tourLocation, price, description) {
+  if(await isUser()) {
+    fetch("/package-booking", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ date, blobUrl, packageTitle, tourLocation, price, description }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        if (data.message === "Booking status updated successfully") {
+          Swal.fire({
+            icon: "info",
+            title: "Payment!",
+            text: `Pay ₹${price} ?`,
+            confirmButtonText: "Pay",
+          }).then(() => {
+            Swal.fire({
+              icon: "success",
+              title: "Success!",
+              text: `Booking status updated successfully`,
+              confirmButtonText: "OK",
+            })
+          })
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: `Booking status updating Failed.`,
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  } else {
+    Swal.fire({
+      icon: "error",
+      title: "Error!",
+      text: `You need to login first!`,
+      confirmButtonText: "OK",
+    }).then((result) => {
+        window.location.href = "/login.html";
+    });
+  }
+}
+  function cancelPackageBooking(date, blobUrl, packageTitle, tourLocation, price, description) {
+    fetch("/cancel-package-booking", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ date, blobUrl, packageTitle, tourLocation, price, description }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        if (data.message === "Booking canceled successfully") {
+          Swal.fire({
+            icon: "success",
+            title: "Success!",
+            text: `Booking canceled successfully`,
+            confirmButtonText: "OK",
+          }).then((result) => {
+              window.location.href = "/userPanel.html";
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: `Booking status updating Failed.`,
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }

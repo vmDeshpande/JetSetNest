@@ -178,6 +178,67 @@ app.get('/get-packages-listings', async (req, res) => {
     }
 });
 
+app.get('/get-booked-packages-listings', async (req, res) => {
+    const username = req.session.user.username;
+
+    try {
+        // Find the user by username
+        const user = await User.findOne({ username });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Extract package titles from the user's bookings
+        const bookedPackages = user.bookings;
+
+        res.json(bookedPackages);
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({ message: 'Error fetching booked packages listings', error: error.message });
+    }
+});
+
+
+app.post('/package-booking', async (req, res) => {
+    const { date, blobUrl, packageTitle, tourLocation, price, description } = req.body;
+    try {
+        const userName = req.session.user.username;
+
+        // Update the user document with the new booking
+        await User.findOneAndUpdate(
+            { username: userName },
+            // Push a new object with booking details into the bookings array
+            { $push: { bookings: { date, blobUrl, packageTitle, tourLocation, price, description } } },
+            { new: true }
+        );
+
+        res.json({ message: 'Booking status updated successfully' });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ message: 'Error updating application status', error: error.message });
+    }
+});
+
+app.post('/cancel-package-booking', async (req, res) => {
+    const { packageTitle } = req.body;
+    try {
+        const userName = req.session.user.username;
+
+        // Update the user document by removing the booking with the specified packageTitle
+        await User.findOneAndUpdate(
+            { username: userName },
+            { $pull: { bookings: { packageTitle } } },
+            { new: true }
+        );
+
+        res.json({ message: 'Booking canceled successfully' });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ message: 'Error canceling booking', error: error.message });
+    }
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
